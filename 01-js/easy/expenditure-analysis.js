@@ -14,7 +14,7 @@ function calculateTotalSpentByCategory(transactions) {
   for (let i = 0; i < transactions.length; i++) {
     let { category, price } = transactions[i];
     if (categoryTotal.hasOwnProperty(category)) {
-      categoryTotal[category] -= price;
+      categoryTotal[category] += price;
     } else {
       categoryTotal[category] = price;
     }
