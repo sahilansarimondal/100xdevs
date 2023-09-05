@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Appbar() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  console.log(email);
 
   useEffect(() => {
     fetch("http://localhost:3000/admin/me", {
@@ -15,7 +16,6 @@ function Appbar() {
       },
     }).then((res) => {
       res.json().then((data) => {
-        console.log(data);
         setEmail(data.username);
       });
     });
@@ -34,6 +34,20 @@ function Appbar() {
           <Typography variant="h5">Coursera</Typography>
         </div>
         <div>
+          <Button
+            onClick={() => {
+              navigate("/create_course");
+            }}
+          >
+            Create
+          </Button>
+          <Button
+            onClick={() => {
+              navigate("/courses");
+            }}
+          >
+            Courses
+          </Button>
           {email}
           <Button
             variant={"contained"}

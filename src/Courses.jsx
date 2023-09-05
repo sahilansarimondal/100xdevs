@@ -1,8 +1,8 @@
+import { Card } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     fetch("http://localhost:3000/admin/courses", {
       method: "GET",
@@ -16,16 +16,25 @@ function Courses() {
       });
     });
   }, []);
-  if (!courses) {
-    setIsLoading(true);
-  }
-  if (!isLoading) {
-    return <div>{JSON.stringify(courses)}</div>;
-  }
-}
 
-function Course(prop) {
-  return <div>{prop.title}</div>;
+  return (
+    <div>
+      {courses.map((course) => {
+        return (
+          <div>
+            <Card>
+              {course.title}
+              {course.description}
+              {course.price}
+              {course.imageLink}
+            </Card>
+            <br />
+            <br />
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default Courses;

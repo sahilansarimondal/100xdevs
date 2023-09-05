@@ -17,11 +17,6 @@ function CreateCourse() {
   const [isChecked, setIsChecked] = useState(false);
   return (
     <div>
-      {title}
-      {description}
-      {price}
-      {image}
-      {isChecked}
       <div
         style={{
           paddingTop: "150px",
