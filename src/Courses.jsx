@@ -1,6 +1,7 @@
-import { Card, Typography } from "@mui/material";
+import { Button, Card, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
@@ -33,7 +34,9 @@ function Courses() {
   );
 }
 
-export function Course(props) {
+export function Course({ course }) {
+  const navigate = useNavigate();
+
   return (
     <Card
       style={{
@@ -43,12 +46,25 @@ export function Course(props) {
       }}
     >
       <Typography textAlign={"center"} variant="h5">
-        {props.course.title}
+        {course.title}
       </Typography>
       <Typography textAlign={"center"} variant="subtitle1">
-        {props.course.description}
+        {course.description}
       </Typography>
-      <img src={props.course.imageLink} style={{ width: 300 }}></img>
+      <img src={course.imageLink} style={{ width: 300 }}></img>
+      <Button
+        variant="contained"
+        style={{
+          display: "block",
+          margin: "auto",
+          marginBottom: "5px",
+        }}
+        onClick={() => {
+          navigate("/course/" + course._id);
+        }}
+      >
+        edit
+      </Button>
     </Card>
   );
 }

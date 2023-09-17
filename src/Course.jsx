@@ -1,144 +1,219 @@
-import { Card } from "@mui/material";
-import { useEffect, useState } from "react"
+import { Card, Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Typography, TextField, Button } from "@mui/material";
+import axios from "axios";
 
 function Course() {
-    let { courseId } = useParams();
-    console.log("hi there from course")
+   let { courseId } = useParams();
+   const [course, setCourse] = useState(null);
 
-    const [courses, setCourses] = useState([]);
-    
-    useEffect(() => {
-        function callback2(data) {
-            setCourses(data.courses);
-        }
-        function callback1(res) {
-            res.json().then(callback2)
-        }
-        fetch("http://localhost:3000/admin/courses/", {
+   useEffect(() => {
+      axios
+         .get("http://localhost:3000/admin/course/" + courseId, {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
-        }).then(callback1)
-    }, []);
-    
-    let course = null;
-    for (let i = 0; i<courses.length; i++) {
-        if (courses[i].id == courseId) [
-            course = courses[i]
-        ]
-    }
+               Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+         })
+         .then((res) => {
+            setCourse(res.data.course);
+         });
+   }, []);
 
-    if (!course) {
-        return <div>
+   if (!course) {
+      return (
+         <div
+            style={{
+               height: "100vh",
+               justifyContent: "center",
+               flexDirection: "column",
+            }}
+         >
             Loading....
-        </div>
-    }
+         </div>
+      );
+   }
 
-    return <div>
-        <CourseCard course={course} />
-        <UpdateCard courses={courses} course={course} setCourses={setCourses} />
-    </div>
+   return (
+      <div>
+         <GrayTopper title={course.title} />
+         <Grid container>
+            <Grid item lg={8} md={12} sm={12}>
+               <UpdateCard course={course} setCourse={setCourse} />
+            </Grid>
+            <Grid item lg={4} md={12} sm={12}>
+               <CourseCard course={course} />
+            </Grid>
+         </Grid>
+      </div>
+   );
 }
 
-function UpdateCard(props) {
-    console.log("hi there from update card")
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
-    const course = props.course;
+function GrayTopper({ title }) {
+   return (
+      <div
+         style={{
+            height: 250,
+            background: "#212121",
+            top: 0,
+            width: "100vw",
+            zIndex: 0,
+            marginBottom: -250,
+         }}
+      >
+         <div
+            style={{
+               height: 250,
+               display: "flex",
+               justifyContent: "center",
+               flexDirection: "column",
+            }}
+         >
+            <div>
+               <Typography
+                  style={{ color: "white", fontWeight: 600 }}
+                  variant="h3"
+                  textAlign={"center"}
+               >
+                  {title}
+               </Typography>
+            </div>
+         </div>
+      </div>
+   );
+}
 
-    return <div style={{display: "flex", justifyContent: "center"}}>
-    <Card varint={"outlined"} style={{width: 400, padding: 20}}>
-    <Typography>Update course details</Typography>
-    <TextField
-        onChange={(e) => {
-            setTitle(e.target.value)
-        }}
-        fullWidth={true}
-        label="Title"
-        variant="outlined"
-    />
+function UpdateCard({ course, setCourse }) {
+   const [title, setTitle] = useState(course.title);
+   const [description, setDescription] = useState(course.description);
+   const [image, setImage] = useState(course.imageLink);
+   const [price, setPrice] = useState(course.price);
 
-    <TextField
-        onChange={(e) => {
-            setDescription(e.target.value)
-        }}
-        fullWidth={true}
-        label="Description"
-        variant="outlined"
-    />
+   return (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+         <Card varint={"outlined"} style={{ maxWidth: 600, marginTop: 200 }}>
+            <div style={{ padding: 20 }}>
+               <Typography style={{ marginBottom: 10 }}>
+                  Update course details
+               </Typography>
+               <TextField
+                  value={title}
+                  style={{ marginBottom: 10 }}
+                  onChange={(e) => {
+                     setTitle(e.target.value);
+                  }}
+                  fullWidth={true}
+                  label="Title"
+                  variant="outlined"
+               />
 
-    <TextField
-        onChange={(e) => {
-            setImage(e.target.value)
-        }}
-        fullWidth={true}
-        label="Image link"
-        variant="outlined"
-    />
+               <TextField
+                  value={description}
+                  style={{ marginBottom: 10 }}
+                  onChange={(e) => {
+                     setDescription(e.target.value);
+                  }}
+                  fullWidth={true}
+                  label="Description"
+                  variant="outlined"
+               />
 
-    <Button
-        size={"large"}
-        variant="contained"
-        onClick={() => {
-            function callback2(data) {
-                let updatedCourses = [];
-                for (let i = 0; i<props.courses.length; i++) {
-                    
-                    if (props.courses[i].id == course.id) {
-                        updatedCourses.push({
-                            id: course.id,
-                            title: title,
-                            description: description,
-                            imageLink: image
-                        })
-                    } else {
-                        updatedCourses.push(props.courses[i]);
-                    }
-                }
-                props.setCourses(updatedCourses);
-            }
-            function callback1(res) {
-                res.json().then(callback2)
-            }
-            fetch("http://localhost:3000/admin/courses/" + course.id, {
-                method: "PUT",
-                body: JSON.stringify({
-                    title: title,
-                    description: description,
-                    imageLink: image,
-                    published: true
-                }),
-                headers: {
-                    "Content-type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            })
-                .then(callback1)
-        }}
-    > Update course</Button>
-    </Card>
-</div>
+               <TextField
+                  value={image}
+                  style={{ marginBottom: 10 }}
+                  onChange={(e) => {
+                     setImage(e.target.value);
+                  }}
+                  fullWidth={true}
+                  label="Image link"
+                  variant="outlined"
+               />
+               <TextField
+                  value={price}
+                  style={{ marginBottom: 10 }}
+                  onChange={(e) => {
+                     setPrice(e.target.value);
+                  }}
+                  fullWidth={true}
+                  label="Price"
+                  variant="outlined"
+               />
+
+               <Button
+                  variant="contained"
+                  onClick={async () => {
+                     axios.put(
+                        "http://localhost:3000/admin/courses/" + course._id,
+                        {
+                           title: title,
+                           description: description,
+                           imageLink: image,
+                           published: true,
+                           price,
+                        },
+                        {
+                           headers: {
+                              "Content-type": "application/json",
+                              Authorization:
+                                 "Bearer " + localStorage.getItem("token"),
+                           },
+                        }
+                     );
+                     let updatedCourse = {
+                        _id: course._id,
+                        title: title,
+                        description: description,
+                        imageLink: image,
+                        price,
+                     };
+                     setCourse(updatedCourse);
+                  }}
+               >
+                  {" "}
+                  Update course
+               </Button>
+            </div>
+         </Card>
+      </div>
+   );
 }
 
 function CourseCard(props) {
-    console.log("hi there from update card")
-    const course = props.course;
-    return <div style={{display: "flex", justifyContent: "center"}}>
-     <Card style={{
-        margin: 10,
-        width: 300,
-        minHeight: 200
-    }}>
-
-        <Typography textAlign={"center"} variant="h5">{course.title}</Typography>
-        <Typography textAlign={"center"} variant="subtitle1">{course.description}</Typography>
-        <img src={course.imageLink} style={{width: 300}} ></img>
-    </Card>
-    </div>
+   const course = props.course;
+   return (
+      <div
+         style={{
+            display: "flex",
+            marginTop: 50,
+            justifyContent: "center",
+            width: "100%",
+         }}
+      >
+         <Card
+            style={{
+               margin: 10,
+               width: 350,
+               minHeight: 200,
+               borderRadius: 20,
+               marginRight: 50,
+               paddingBottom: 15,
+               zIndex: 2,
+            }}
+         >
+            <img src={course.imageLink} style={{ width: 350 }}></img>
+            <div style={{ marginLeft: 10 }}>
+               <Typography variant="h5">{course.title}</Typography>
+               <Typography variant="subtitle2" style={{ color: "gray" }}>
+                  Price
+               </Typography>
+               <Typography variant="subtitle1">
+                  <b>Rs {course.price} </b>
+               </Typography>
+            </div>
+         </Card>
+      </div>
+   );
 }
 
 export default Course;

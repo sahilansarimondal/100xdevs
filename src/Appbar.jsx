@@ -25,24 +25,6 @@ function Appbar() {
     getData();
   }, []);
 
-  // useEffect(() => {
-  //   function callback2(data) {
-  //     if (data.username) {
-  //       setUserEmail(data.username);
-  //     }
-  //   }
-  //   function callback1(res) {
-  //     res.json().then(callback2);
-  //   }
-  //   console.log("token - " + localStorage.getItem("token"));
-  //   fetch("http://localhost:3000/admin/me", {
-  //     method: "GET",
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("token"),
-  //     },
-  //   }).then(callback1);
-  // }, []);
-
   if (userEmail) {
     return (
       <div

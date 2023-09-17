@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/admin", adminRouter);
+app.use("/admin", adminRolsuter);
 app.use("/user", userRouter);
 
 // Connect to MongoDB
@@ -16,10 +16,10 @@ app.use("/user", userRouter);
 // mongoose.connect('mongodb+srv://sahilansarimondal:sahil1234@sahildb.jqkiszf.mongodb.net/Courses', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" });
 
 mongoose
-  .connect(
-    "mongodb+srv://sahilansarimondal:sahil1234@sahildb.jqkiszf.mongodb.net/Courses"
-  )
-  .then(() => console.log("MongoDB is Connected"))
-  .catch((err) => console.log(err));
+   .connect(
+      "mongodb+srv://sahilansarimondal:sahil1234@sahildb.jqkiszf.mongodb.net/Courses"
+   )
+   .then(() => console.log("MongoDB is Connected"))
+   .catch((err) => console.log(err));
 
 app.listen(3000, () => console.log("Server running on port 3000"));

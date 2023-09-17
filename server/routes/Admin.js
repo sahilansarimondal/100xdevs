@@ -30,8 +30,6 @@ router.post("/signup", (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.headers;
-  console.log(username);
-  console.log(password);
   const admin = await Admin.findOne({ username, password });
   if (admin) {
     const token = jwt.sign({ username, role: "admin" }, SECRET, {
@@ -63,6 +61,13 @@ router.put("/courses/:courseId", authenticateJwt, async (req, res) => {
 router.get("/courses", authenticateJwt, async (req, res) => {
   const courses = await Course.find({});
   res.json({ courses });
+});
+
+router.get("/course/:courseId", authenticateJwt, async (req, res) => {
+  const courseId = req.params.courseId;
+  const course = await Course.findById(courseId);
+  console.log(course);
+  res.json({ course });
 });
 
 module.exports = router;
